@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  entrytracker:
+    build: .
+    container_name: entrytracker-app
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=entryuser
+      - DB_PASSWORD=entrypass
+      - DB_NAME=entrydb
+    depends_on:
+      - mysql
+    networks:
+      - app_net
+
+  mysql:
+    image: mysql:5.7
+    container_name: entrytracker-db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=entrypass
+      - MYSQL_DATABASE=entrydb
+      - MYSQL_USER=entryuser
+      - MYSQL_PASSWORD=entrypass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app_net
+
+networks:
+  app_net:
+
+volumes:
+  db_data:
